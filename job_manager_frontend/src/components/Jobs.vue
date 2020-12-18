@@ -125,7 +125,7 @@ export default {
             }
           })
           .then((response) => {
-            this.getJobs()
+            this.getJobs(this.current_page)
           })
           .catch((error) => {
             console.log(error)
