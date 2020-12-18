@@ -24,3 +24,21 @@ No laravel iremos iniciar o servidor proprio do laravel e queue.
 ## Iniciando o frontend da aplicação
 
 No vue iremos iniciar o servidor do vue com o comando 'npm run dev'
+
+## Endpoint
+
+-Adicionar Usuário: post 'http://127.0.0.1:8000/api/users'
+-Login: post 'http://127.0.0.1:8000/api/login'
+-Logout: get 'http://127.0.0.1:8000/api/logout'
+
+-Usuários: get 'http://127.0.0.1:8000/api/users'
+-Usuário: get 'http://127.0.0.1:8000/api/user/{id}/show'
+-Editar usuário: put 'http://127.0.0.1:8000/api/user/{id}/edit'
+-Excluir usuário: delete 'http://127.0.0.1:8000/api/user/{id}/delete'
+
+-Jobs: get 'http://127.0.0.1:8000/api/jobs'
+-Job: get 'http://127.0.0.1:8000/api/job/{id}/show'
+-Adicionar job: post 'http://127.0.0.1:8000/api/job/add'
+-Editar job: put 'http://127.0.0.1:8000/api/job/{id}/edit'
+-Concluir job: get 'http://127.0.0.1:8000/api/job/{id}/conclude'
+-Excluir job: delete 'http://127.0.0.1:8000/api/job/{id}/delete'
