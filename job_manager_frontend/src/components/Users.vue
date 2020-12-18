@@ -102,7 +102,7 @@ export default {
             }
           })
           .then((response) => {
-            this.getUsers()
+            this.getUsers(this.current_page)
           })
           .catch((error) => {
             console.log(error)
