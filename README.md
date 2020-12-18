@@ -23,5 +23,4 @@ No laravel iremos iniciar o servidor proprio do laravel e queue.
 
 ## Iniciando o frontend da aplicação
 
-No vue iremos iniciar o servidor do vue
--npm run dev
+No vue iremos iniciar o servidor do vue com o comando 'npm run dev'
