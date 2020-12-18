@@ -24,4 +24,4 @@ No laravel iremos iniciar o servidor proprio do laravel e queue.
 ## Iniciando o frontend da aplicação
 
 No vue iremos iniciar o servidor do vue
--npm run 
+-npm run dev
