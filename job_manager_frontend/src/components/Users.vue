@@ -105,7 +105,7 @@ export default {
             }
           })
           .then((response) => {
-            this.getUsers()
+            this.getUsers(this.current_page)
           })
           .catch((error) => {
             if (error.response.status === 401) {
