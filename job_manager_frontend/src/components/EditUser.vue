@@ -3,7 +3,7 @@
     <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
       <h2>Editar Usuário</h2>
     </div>
-
+    <go-back router="/users"></go-back>
     <div class="row row-cols-1">
       <b-form @submit="edit">
         <b-alert v-if="success" variant="success" show>{{ success }}</b-alert>
@@ -99,7 +99,11 @@ export default {
           this.email = response.data.email
         })
         .catch((error) => {
-          console.log(error)
+          if (error.response.status === 401) {
+            localStorage.setItem('jwt', '')
+            this.$router.push({ name: 'Login' })
+            this.$router.go(0)
+          }
         })
     },
     edit: function (event) {
@@ -121,10 +125,21 @@ export default {
         )
         .then((response) => {
           this.success = response.data.success
+          setTimeout(() => {
+            this.success = ''
+          }, 2000)
         })
         .catch((error) => {
+          if (error.response.status === 401) {
+            localStorage.setItem('jwt', '')
+            this.$router.push({ name: 'Login' })
+            this.$router.go(0)
+          }
           if (error.response.status === 500) {
             this.error = error.response.data.error
+            setTimeout(() => {
+              this.error = ''
+            }, 2000)
           }
           error = error.response.data.error
           if (error.name) {
@@ -143,16 +158,9 @@ export default {
             this.cPasswordIsInvalid = 'form-control is-invalid'
           }
         })
-    },
-    verifyJwt () {
-      let jwt = localStorage.getItem('jwt')
-      if (!jwt) {
-        this.$router.push({ name: 'Login' })
-      }
     }
   },
   mounted () {
-    this.verifyJwt()
     this.getUser()
   }
 }

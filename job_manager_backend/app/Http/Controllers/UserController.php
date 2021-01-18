@@ -31,14 +31,8 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(User $user)
     {
-        $user = User::find($id);
-
-        if (!$user) {
-            return response()->json(['error' => 'Usuário não encontrado'], 404);
-        }
-
         return response()->json($user, 200);
     }
 
@@ -96,12 +90,8 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        $this->user = User::find($id);
-        if (!$this->user) {
-            return response()->json(['error' => 'Usuário não encontrado!'], 404);
-        }
         $this->data = $request->only([
             'name',
             'email',
@@ -139,12 +129,8 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        $user = User::find($id);
-        if (!$user) {
-            return response()->json(['error' => 'Não foi possivel excluir o usuário, porque o mesmo não foi encontrado!'], 404);
-        }
             $user->delete();
             $subjectMatter = "Usuário Excluido";
             $title = "Usuário Excluido";

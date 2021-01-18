@@ -21,3 +21,13 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
+
+Vue.component('go-back', {
+  props: ['router'],
+  methods: {
+    redirect: function (router) {
+      this.$router.push(router)
+    }
+  },
+  template: '<b-button variant="btn btn-outline-success" v-on:click="redirect(router)"> Voltar </b-button>'
+})

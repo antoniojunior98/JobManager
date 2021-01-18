@@ -3,7 +3,7 @@
     <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
       <h2>Adicionar Job</h2>
     </div>
-
+    <go-back router="/jobs"></go-back>
     <div class="row row-cols-1">
       <b-form @submit="add">
         <b-alert v-if="success" variant="success" show>{{ success }}</b-alert>
@@ -94,10 +94,19 @@ export default {
           this.name = ''
           this.description = ''
           this.date = ''
+          setTimeout(() => {
+            this.success = ''
+          }, 2000)
         })
         .catch((error) => {
+          if (error.response.status === 401) {
+            this.$router.push({ name: 'Login' })
+          }
           if (error.response.status === 500) {
             this.error = error.response.data.error
+            setTimeout(() => {
+              this.error = ''
+            }, 2000)
           }
           error = error.response.data.error
           if (error.name) {

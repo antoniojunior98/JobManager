@@ -8,7 +8,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class JobController extends Controller
 {
@@ -31,12 +30,6 @@ class JobController extends Controller
         }
 
         return response()->json($jobs, 200);
-    }
-
-    private function user()
-    {
-        $user = JWTAuth::parseToken()->authenticate();
-        return $user;
     }
 
     /**
@@ -74,7 +67,9 @@ class JobController extends Controller
             $title = "{$job->name}";
             $description = "{$job->description}";
             $link = "http://localhost:8080/#/job/{$job->id}/show";
-            Mail::cc($users)->send(new MailJob($subjectMatter, $title, $description, $link));
+            foreach($users as $user){
+                Mail::to($user)->send(new MailJob($subjectMatter, $title, $description, $link));
+            }
 
             return response()->json(['success' => 'Job criado com sucesso!'], 201);
         }
@@ -87,13 +82,8 @@ class JobController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Job $job)
     {
-        $job = Job::find($id);
-
-        if (!$job) {
-            return response()->json(['error' => 'Job não encontrado'], 404);
-        }
         $status = $job->status;
         if ($status == 1) {
             $status = "Em andamento";
@@ -116,17 +106,14 @@ class JobController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Job $job, Request $request)
     {
-        $job = Job::find($id);
-        if (!$job) {
-            return response()->json(['error' => 'Não foi possivel atualizar o job, porque o mesmo não foi encontrado!'], 404);
-        }
+        $user = $request->user();
         $data = $request->only([
             'description',
-            'delivery_date',
+            'delivery_date'
         ]);
-
+    
         $validate = Validator::make($data, [
             'description' => 'required|string|min:10',
             'delivery_date' => 'required|date',
@@ -135,7 +122,6 @@ class JobController extends Controller
         if ($validate->fails()) {
             return response()->json(['error' => $validate->errors()], 422);
         }
-        $user = $this->user();
 
         $job->id_user = $user->id;
         $job->description = $data['description'];
@@ -148,17 +134,19 @@ class JobController extends Controller
             $title = "{$job->name}";
             $description = "Job Atualizado por {$user->name}";
             $link = "http://localhost:8080/#/job/{$job->id}/show";
-            Mail::cc($users)->send(new MailJob($subjectMatter, $title, $description, $link));
+            foreach($users as $user){
+                Mail::to($user)->send(new MailJob($subjectMatter, $title, $description, $link));
+            }
 
             return response()->json(['success' => 'Job atualizado com sucesso!'], 201);
         }
         return response()->json(['error' => 'Não foi possivel atualizar o trabalho, tente novamente mais tarde!'], 500);
     }
 
-    public function conclude($id)
-    {
-        $job = Job::find($id);
-        $user = $this->user();
+    public function conclude(Job $job, Request $request)
+    {  
+        $user = $request->user();
+       
         if (!$job) {
             return response()->json(['error' => 'Não foi possivel atualizar o job, porque o mesmo não foi encontrado!'], 404);
         }
@@ -172,7 +160,9 @@ class JobController extends Controller
         $title = "{$job->name}";
         $description = "Job Concluido por {$user->name} em {$job->finished_in}";
         $link = "http://localhost:8080/#/job/{$job->id}/show";
-        Mail::cc($users)->send(new MailJob($subjectMatter, $title, $description, $link));
+        foreach($users as $user){
+            Mail::to($user)->send(new MailJob($subjectMatter, $title, $description, $link));
+        }
     }
 
     /**
@@ -181,13 +171,9 @@ class JobController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Job $job, Request $request)
     {
-        $user = $this->user();
-        $job = Job::find($id);
-        if (!$job) {
-            return response()->json(['error' => 'Não foi possivel excluir o Job, porque o mesmo não foi encontrado!'], 404);
-        }
+        $user = $request->user();
         $job->delete();
 
         $users = User::all();
@@ -195,6 +181,9 @@ class JobController extends Controller
         $title = "{$job->name}";
         $description = "Job Excluido por {$user->name}";
         $link = "http://localhost:8080/#/job/{$job->id}/show";
-        Mail::cc($users)->send(new MailJob($subjectMatter, $title, $description, $link));
+
+        foreach($users as $user){
+            Mail::to($user)->send(new MailJob($subjectMatter, $title, $description, $link));
+        }
     }
 }

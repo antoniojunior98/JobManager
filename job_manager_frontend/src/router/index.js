@@ -11,6 +11,7 @@ import Jobs from '@/components/Jobs'
 import AddJob from '@/components/AddJob'
 import EditJob from '@/components/EditJob'
 import Job from '@/components/Job'
+import NotFound from '@/components/NotFound'
 
 Vue.use(Router)
 
@@ -70,6 +71,11 @@ export default new Router({
       path: '/job/:id/show',
       name: 'Job',
       component: Job
+    },
+    {
+      path: '/404',
+      name: 'NotFound',
+      component: NotFound
     }
   ]
 })

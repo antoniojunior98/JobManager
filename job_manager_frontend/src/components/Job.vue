@@ -1,5 +1,6 @@
 <template>
   <div class="Job">
+    <go-back router="/jobs"></go-back>
     <div class="my-3 p-3 bg-white rounded shadow-sm">
     <h3 class="border-bottom pb-2 mb-0">Job</h3>
     <div class="d-flex text-muted pt-3">
@@ -81,7 +82,13 @@ export default {
           this.userName = response.data.userName
         })
         .catch((error) => {
-          console.log(error)
+          if (error.response.status === 401) {
+            localStorage.setItem('jwt', '')
+            this.$router.push({ name: 'Login' })
+          }
+          if (error.response.status === 404) {
+            this.$router.push({ name: 'NotFound' })
+          }
         })
     },
     conclude: function () {
@@ -95,18 +102,15 @@ export default {
           this.getJob()
         })
         .catch((error) => {
-          console.log(error.response)
+          if (error.response.status === 401) {
+            localStorage.setItem('jwt', '')
+            this.$router.push({ name: 'Login' })
+            this.$router.go(0)
+          }
         })
-    },
-    verifyJwt () {
-      let jwt = localStorage.getItem('jwt')
-      if (!jwt) {
-        this.$router.push({ name: 'Login' })
-      }
     }
   },
   mounted () {
-    this.verifyJwt()
     this.getJob()
   }
 }

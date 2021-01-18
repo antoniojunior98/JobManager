@@ -65,7 +65,6 @@ export default {
     }
   },
   mounted () {
-    this.verifyJwt()
     this.getUsers()
   },
   methods: {
@@ -83,7 +82,11 @@ export default {
           this.last_page = response.data.last_page
         })
         .catch((error) => {
-          console.log(error)
+          if (error.response.status === 401) {
+            localStorage.setItem('jwt', '')
+            this.$router.push({ name: 'Login' })
+            this.$router.go(0)
+          }
         })
     },
     add: function () {
@@ -105,14 +108,12 @@ export default {
             this.getUsers()
           })
           .catch((error) => {
-            console.log(error)
+            if (error.response.status === 401) {
+              localStorage.setItem('jwt', '')
+              this.$router.push({ name: 'Login' })
+              this.$router.go(0)
+            }
           })
-      }
-    },
-    verifyJwt: function () {
-      let jwt = localStorage.getItem('jwt')
-      if (!jwt) {
-        this.$router.push({ name: 'Login' })
       }
     }
   }
