@@ -4,6 +4,10 @@
       <h2>Cadastrar Usuário</h2>
     </div>
     <go-back router="/users"></go-back>
+    <div class="text-center" v-show="loading">
+      <span class="spinner-border text-info" role="status"></span>
+      <span class="text-info">Carregando...</span>
+    </div>
     <div class="row row-cols-1">
       <b-form @submit="add">
         <b-alert v-if="success" variant="success" show>{{ success }}</b-alert>
@@ -67,12 +71,15 @@ export default {
       passwordError: '',
       nameIsInvalid: 'form-control',
       emailIsInvalid: 'form-control',
-      passwordIsInvalid: 'form-control'
+      passwordIsInvalid: 'form-control',
+      loading: false
     }
   },
   methods: {
     add: function (event) {
       event.preventDefault()
+      this.loading = true
+
       axios
         .post('http://127.0.0.1:8000/api/user/add', {
           name: this.name,
@@ -111,6 +118,9 @@ export default {
             this.passwordError = error.password[0]
             this.passwordIsInvalid = 'form-control is-invalid'
           }
+        })
+        .finally(() => {
+          this.loading = false
         })
     }
   }

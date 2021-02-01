@@ -3,8 +3,11 @@
     <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
       <h1 class="display-4">Job</h1>
     </div>
-
-    <div class="row row-cols-1 text-center">
+    <div class="text-center" v-if="loading">
+      <span class="spinner-border text-info" role="status"></span>
+      <span class="text-info">Carregando...</span>
+    </div>
+    <div class="row row-cols-1 text-center" v-else>
       <div class="table-responsive">
         <table class="table table-hover table-sm">
           <b-button variant="btn btn-outline-success" v-on:click="add()"
@@ -82,7 +85,8 @@ export default {
       jobs: null,
       pages: null,
       current_page: null,
-      last_page: null
+      last_page: null,
+      loading: true
     }
   },
   mounted () {
@@ -108,6 +112,9 @@ export default {
             this.$router.push({ name: 'Login' })
             this.$router.go(0)
           }
+        })
+        .finally(() => {
+          this.loading = false
         })
     },
     add: function () {

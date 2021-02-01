@@ -3,7 +3,12 @@
     <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
       <h2>Editar Usuário</h2>
     </div>
+    <div class="text-center" v-show="loading">
+      <span class="spinner-border text-info" role="status"></span>
+      <span class="text-info">Carregando...</span>
+    </div>
     <go-back router="/users"></go-back>
+
     <div class="row row-cols-1">
       <b-form @submit="edit">
         <b-alert v-if="success" variant="success" show>{{ success }}</b-alert>
@@ -83,7 +88,8 @@ export default {
       nameIsInvalid: 'form-control',
       emailIsInvalid: 'form-control',
       cPasswordIsInvalid: 'form-control',
-      passwordIsInvalid: 'form-control'
+      passwordIsInvalid: 'form-control',
+      loading: true
     }
   },
   methods: {
@@ -105,9 +111,14 @@ export default {
             this.$router.go(0)
           }
         })
+        .finally(() => {
+          this.loading = false
+        })
     },
     edit: function (event) {
       event.preventDefault()
+      this.loading = true
+
       axios
         .put(
           'http://127.0.0.1:8000/api/user/' + this.id + '/edit',
@@ -157,6 +168,9 @@ export default {
             this.cPasswordError = error.current_password[0]
             this.cPasswordIsInvalid = 'form-control is-invalid'
           }
+        })
+        .finally(() => {
+          this.loading = false
         })
     }
   },

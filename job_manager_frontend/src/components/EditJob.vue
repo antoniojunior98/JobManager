@@ -3,6 +3,10 @@
     <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
       <h2>Editar Job</h2>
     </div>
+    <div class="text-center" v-show="loading">
+      <span class="spinner-border text-info" role="status"></span>
+      <span class="text-info">Carregando...</span>
+    </div>
     <go-back router="/jobs"></go-back>
     <div class="row row-cols-1">
       <b-form @submit="edit">
@@ -53,7 +57,8 @@ export default {
       descriptionError: '',
       dateError: '',
       descriptionIsInvalid: 'form-control',
-      dateIsInvalid: 'form-control'
+      dateIsInvalid: 'form-control',
+      loading: true
     }
   },
   methods: {
@@ -75,9 +80,14 @@ export default {
             this.$router.go(0)
           }
         })
+        .finally(() => {
+          this.loading = false
+        })
     },
     edit: function (event) {
       event.preventDefault()
+      this.loading = true
+
       axios
         .put(
           'http://127.0.0.1:8000/api/job/' + this.id + '/edit',
@@ -118,6 +128,9 @@ export default {
             this.dateError = error.email[0]
             this.dateIsInvalid = 'form-control is-invalid'
           }
+        })
+        .finally(() => {
+          this.loading = false
         })
     }
   },

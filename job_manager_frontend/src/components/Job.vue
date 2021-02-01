@@ -1,7 +1,13 @@
 <template>
   <div class="Job">
     <go-back router="/jobs"></go-back>
-    <div class="my-3 p-3 bg-white rounded shadow-sm">
+
+    <div class="text-center" v-if="loading">
+      <span class="spinner-border text-info" role="status"></span>
+      <span class="text-info">Carregando...</span>
+    </div>
+
+    <div class="my-3 p-3 bg-white rounded shadow-sm" v-else>
     <h3 class="border-bottom pb-2 mb-0">Job</h3>
     <div class="d-flex text-muted pt-3">
       <p class="pb-3 mb-0 small lh-sm border-bottom">
@@ -62,7 +68,8 @@ export default {
       deliveryDate: '',
       userName: '',
       status: '',
-      finishedIn: ''
+      finishedIn: '',
+      loading: true
     }
   },
   methods: {
@@ -90,8 +97,13 @@ export default {
             this.$router.push({ name: 'NotFound' })
           }
         })
+        .finally(() => {
+          this.loading = false
+        })
     },
     conclude: function () {
+      this.loading = true
+
       axios
         .get('http://127.0.0.1:8000/api/job/' + this.id + '/conclude', {
           headers: {
@@ -107,6 +119,9 @@ export default {
             this.$router.push({ name: 'Login' })
             this.$router.go(0)
           }
+        })
+        .finally(() => {
+          this.loading = false
         })
     }
   },
